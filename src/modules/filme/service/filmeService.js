@@ -1,19 +1,21 @@
-import {Filme} from '#filme/models/filme.js';
-import {Categoria} from '#categoria/models/categoria.js';
+import { Filme } from '#filme/models/entiy/filme.js';
+import { Categoria } from '#categoria/models/entiy/categoria.js';
+import { FilmeResponse } from "#filme/models/response/filmeResponse.js";
 
 import sequelize from '#config/database-connection.js';
+
+//TODO REFATORAR E TALVES COLOCAR COLOCAR UM AWAIT NO ID
 
 class FilmeService {
 
     static async findAll() {
-        const filmes = await Filme.findAll({include: {all: true, nested: true}});
-        return filmes;
+        return (await Filme.findAll({include: {all: true, nested: true}})).map(filme => new FilmeResponse(filme));
     }
 
     static async findById(req) {
         const {id} = req.params;
         const filme = await Filme.findByPk(id, {include: {all: true, nested: true}});
-        return filme;
+        return new FilmeResponse(filme);
     }
 
 
@@ -35,7 +37,7 @@ class FilmeService {
             throw "Ouve um erro em uma das categorias!";
         }
 
-        return await Filme.findByPk(filme.id, {include: {all: true, nested: true}});
+        return new FilmeResponse(await Filme.findByPk(filme.id, {include: {all: true, nested: true}}));
     }
 
     static async update(req) {
@@ -55,21 +57,21 @@ class FilmeService {
             throw "Ouve um erro em uma das categorias!";
         }
 
-        return await Filme.findByPk(filme.id, {include: {all: true, nested: true}});
+        return new FilmeResponse(await Filme.findByPk(filme.id, {include: {all: true, nested: true}}));
     }
 
     static async delete(req) {
         const {id} = req.params;
-        const filme = await Filme.findByPk(id);
+        const filme = await Filme.findByPk(id, {include: {all: true, nested: true}});
         if (filme == null)
             throw 'Filme não encontrado!';
         try {
             await filme.destroy();
-            return filme;
+            return new FilmeResponse(filme);
         } catch (error) {
             throw "Erro ao tentar deletar filme!";
         }
     }
 }
 
-export {FilmeService}
+export { FilmeService }

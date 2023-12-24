@@ -1,35 +1,35 @@
-import { Categoria } from '#categoria/models/categoria.js';
+import { Categoria } from '#categoria/models/entiy/categoria.js';
+import { CategoriaResponse } from "#categoria/models/response/categoriaResponse.js";
 
-//TODO REFATORAR
+//TODO REFATORAR E TALVES COLOCAR COLOCAR UM AWAIT NO ID
 
 class CategoriaService {
 
     static async findAll() {
-        const categorias = await Categoria.findAll();
-        return categorias;
+        return (await Categoria.findAll()).map(categoria => new CategoriaResponse(categoria));
     }
 
     static async findById(req) {
-        const {id} = req.params;
+        const { id } = req.params;
         const categoria = await Categoria.findByPk(id);
-        return categoria;
+        return new CategoriaResponse(categoria);
     }
 
     static async create(req) {
-        const {nome} = req.body;
-        const categoria = await Categoria.create({nome});
-        return await Categoria.findByPk(categoria.id);
+        const { nome } = req.body;
+        const categoria = await Categoria.create({ nome });
+        return new CategoriaResponse(await Categoria.findByPk(categoria.id));
     }
 
     static async update(req) {
-        const {id} = req.params;
-        const {nome} = req.body;
+        const { id } = req.params;
+        const { nome } = req.body;
         const categoria = await Categoria.findByPk(id);
         if (categoria == null)
             throw 'Categoria não encontrada!';
-        Object.assign(categoria, {nome});
+        Object.assign(categoria, { nome });
         await categoria.save();
-        return await Categoria.findByPk(categoria.id);
+        return new CategoriaResponse(await Categoria.findByPk(categoria.id));
     }
 
     static async delete(req) {
@@ -39,7 +39,7 @@ class CategoriaService {
             throw 'Categoria não encontrado!';
         try {
             await categoria.destroy();
-            return categoria;
+            return new CategoriaResponse(categoria);
         } catch (error) {
             throw "Não é possível remover uma categoria associado a um filme!";
         }

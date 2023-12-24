@@ -1,4 +1,4 @@
-import {FilmeService} from '#filme/service/FilmeService.js';
+import {FilmeService} from '#filme/service/filmeService.js';
 
 class FilmeController {
 

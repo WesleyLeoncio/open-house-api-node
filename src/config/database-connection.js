@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize';
 import { databaseConfig } from "#config/database-config.js";
-import { Categoria } from '#categoria/models/categoria.js';
-import { Filme } from '#filme/models/filme.js';
+import { Categoria } from '#categoria/models/entiy/categoria.js';
+import { Filme } from '#filme/models/entiy/filme.js';
 
 const sequelize = new Sequelize(databaseConfig);
 
