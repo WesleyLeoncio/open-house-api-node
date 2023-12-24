@@ -6,6 +6,7 @@ class Filme extends Model {
         super.init({
             nome: {
                 type: DataTypes.STRING,
+                unique: true,
                 validate: {
                     notEmpty: {msg: "Nome do filme deve ser preenchido!"},
                 }
