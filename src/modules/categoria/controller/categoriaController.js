@@ -3,7 +3,7 @@ import { CategoriaService } from "#categoria/service/categoriaService.js";
 class CategoriaController {
 
     static async buscarTodasCategorias(req, res, next) {
-        CategoriaService.findAll()
+        CategoriaService.findAll(req)
             .then(objs => res.json(objs))
             .catch(next);
     }

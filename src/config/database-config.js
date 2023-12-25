@@ -1,4 +1,4 @@
-// Configuração do banco de dados no ambiente de teste
+// Configuração do banco de dados no ambiente de utils
 export const databaseConfig = {
     dialect: 'sqlite',
     storage: 'database.sqlite',
