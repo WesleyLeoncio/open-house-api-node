@@ -6,6 +6,7 @@ class Categoria extends Model {
         super.init({
             nome: {
                 type: DataTypes.STRING,
+                unique: true,
                 validate: {
                     notEmpty: {msg: "Nome da Categoria deve ser preenchido!"},
                     len: {args: [2, 50], msg: "Nome da Categoria deve ter entre 2 e 50 letras!"}
