@@ -3,7 +3,7 @@ import {FilmeService} from '#filme/service/filmeService.js';
 class FilmeController {
 
     static async buscarTodosFilmes(req, res, next) {
-        FilmeService.findAll()
+        FilmeService.findAll(req)
             .then(objs => res.json(objs))
             .catch(next);
     }

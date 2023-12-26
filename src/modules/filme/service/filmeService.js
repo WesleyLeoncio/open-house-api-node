@@ -1,6 +1,7 @@
 import { Filme } from '#filme/models/entiy/filme.js';
 import { Categoria } from '#categoria/models/entiy/categoria.js';
 import { FilmeResponse } from "#filme/models/response/filmeResponse.js";
+import { Pageable } from "#utils/pageable.js";
 
 import sequelize from '#config/database-connection.js';
 
@@ -8,8 +9,17 @@ import sequelize from '#config/database-connection.js';
 
 class FilmeService {
 
-    static async findAll() {
-        return (await Filme.findAll({include: {all: true, nested: true}})).map(filme => new FilmeResponse(filme));
+    static async findAll(req) {
+        const pageable = new Pageable(req.query);
+        return await Filme.findAndCountAll({include: {all: true, nested: true},
+            distinct: true,
+            limit: pageable.limit,
+            offset: pageable.offset,
+            where: pageable.getFilter('nome'),
+
+        })
+            .then(data =>
+                pageable.getPagingData(data.count, data.rows.map(f => new FilmeResponse(f))));
     }
 
     static async findById(req) {

@@ -1,38 +1,22 @@
 import { Categoria } from '#categoria/models/entiy/categoria.js';
 import { CategoriaResponse } from "#categoria/models/response/categoriaResponse.js";
 import { Pageable } from "#utils/pageable.js";
+import { Op } from "sequelize";
 
 //TODO REFATORAR E TALVES COLOCAR COLOCAR UM AWAIT NO ID
 
-// const getPagination = (page, size) => {
-//     const limit = size ? +size : 3;
-//     const offset = page ? page * limit : 0;
-//
-//     return { limit, offset };
-// };
-//
-// const getPagingData = (data, page, limit) => {
-//     const { count: totalElements, rows: itens } = data;
-//     const currentPage = page ? +page : 0;
-//     const totalPages = Math.ceil(totalElements / limit);
-//     const content = itens.map(categoria => new CategoriaResponse(categoria));
-//     return { totalElements, content, totalPages, currentPage };
-// };
 
 class CategoriaService {
 
-    // static async findAll() {
-    //     return (await Categoria.findAll()).map(categoria => new CategoriaResponse(categoria));
-    // }
-
     static async findAll(req) {
-        // const {page, size, filter} = req.query;
-        //let condition = title ? {title: {[Op.like]: `%${title}%`}} : null;
         const pageable = new Pageable(req.query);
 
-        return await Categoria.findAndCountAll({limit: pageable.limit, offset: pageable.offset})
+        return await Categoria.findAndCountAll({
+            where: pageable.getFilter('nome'),
+            limit: pageable.limit,
+            offset: pageable.offset})
             .then(data =>
-                pageable.getPagingData(data.count, data.rows.map(d => new CategoriaResponse(d))));
+                pageable.getPagingData(data.count, data.rows.map(c => new CategoriaResponse(c))));
     }
 
     static async findById(req) {

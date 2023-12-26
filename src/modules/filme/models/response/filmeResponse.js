@@ -10,7 +10,6 @@ class FilmeResponse {
         this.categorias = filme.categorias.map(c => new CategoriaResponse(c));
     }
 
-
 }
 
 export { FilmeResponse }
