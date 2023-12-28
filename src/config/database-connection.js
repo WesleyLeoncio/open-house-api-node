@@ -1,16 +1,22 @@
 import Sequelize from 'sequelize';
 import { databaseConfig } from "#config/database-config.js";
-import { Categoria } from '#categoria/models/entiy/categoria.js';
-import { Filme } from '#filme/models/entiy/filme.js';
+import { Categoria } from '#categoria/models/entity/categoria.js';
+import { Filme } from '#filme/models/entity/filme.js';
+import { Role } from "#role/models/entity/role.js";
+import { Usuario } from "#usuario/models/entity/usuario.js";
 
 const sequelize = new Sequelize(databaseConfig);
 
 
 Categoria.init(sequelize);
 Filme.init(sequelize);
+Role.init(sequelize);
+Usuario.init(sequelize)
 
 Categoria.associate(sequelize.models);
 Filme.associate(sequelize.models);
+Role.associate(sequelize.models);
+Usuario.associate(sequelize.models);
 
 
 databaseCreate();
@@ -43,6 +49,15 @@ function databaseCreate() {
 
         await filme2.addCategorias(categoria1, {through: 'filme_categoria'});
 
+        const role1 = await Role.create({nome: 'ROLE_MASTER'});
+        const role2 = await Role.create({nome: 'ROLE_ADMIN'});
+        const role3 = await Role.create({nome: 'ROLE_USER'});
+
+        const usuario1 = await Usuario.create({nome:'User 1', login:'teste@email.com', senha:'123456', status:true});
+
+        usuario1.addRoles(role1, {through: 'profile'});
+
+        usuario1.addRoles(role2, {through: 'profile'});
 
     })();
 }

@@ -1,4 +1,4 @@
-import {Model, DataTypes} from 'sequelize';
+import { Model, DataTypes } from 'sequelize';
 
 class Filme extends Model {
 
@@ -48,4 +48,4 @@ class Filme extends Model {
     }
 }
 
-export {Filme};
+export { Filme };

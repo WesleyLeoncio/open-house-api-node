@@ -1,6 +1,6 @@
 import {CategoriaResponse} from "#categoria/models/response/categoriaResponse.js";
 
-class FilmeResponse {
+export class FilmeResponse {
     constructor(filme) {
         this.id = filme.id;
         this.nome = filme.nome;
@@ -11,5 +11,3 @@ class FilmeResponse {
     }
 
 }
-
-export { FilmeResponse }

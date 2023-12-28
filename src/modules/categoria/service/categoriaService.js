@@ -1,12 +1,11 @@
-import { Categoria } from '#categoria/models/entiy/categoria.js';
+import { Categoria } from '#categoria/models/entity/categoria.js';
 import { CategoriaResponse } from "#categoria/models/response/categoriaResponse.js";
 import { Pageable } from "#utils/pageable.js";
-import { Op } from "sequelize";
 
 //TODO REFATORAR E TALVES COLOCAR COLOCAR UM AWAIT NO ID
 
 
-class CategoriaService {
+export class CategoriaService {
 
     static async findAll(req) {
         const pageable = new Pageable(req.query);
@@ -56,4 +55,3 @@ class CategoriaService {
     }
 }
 
-export { CategoriaService };

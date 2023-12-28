@@ -23,6 +23,9 @@
   "imports" : {
     "#categoria/*.js": "./src/modules/categoria/*.js",
     "#filme/*.js": "./src/modules/filme/*.js",
+    "#role/*.js": "./src/modules/role/*.js",
+    "#usuario/*.js": "./src/modules/usuario/*.js",
+    "#avaliacao/*.js": "./src/modules/avaliacao/*.js",
     "#utils/*.js": "./src/modules/utils/*.js",
     "#config/*.js": "./src/config/*.js",
     "#_middleware/*.js": "./src/_middleware/*.js"

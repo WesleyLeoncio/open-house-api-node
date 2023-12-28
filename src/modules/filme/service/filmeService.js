@@ -1,5 +1,5 @@
-import { Filme } from '#filme/models/entiy/filme.js';
-import { Categoria } from '#categoria/models/entiy/categoria.js';
+import { Filme } from '#filme/models/entity/filme.js';
+import { Categoria } from '#categoria/models/entity/categoria.js';
 import { FilmeResponse } from "#filme/models/response/filmeResponse.js";
 import { Pageable } from "#utils/pageable.js";
 
