@@ -1,7 +1,7 @@
 import { Model, DataTypes } from 'sequelize';
 
-//TODO ADICIONAR VALIDATE
-class Avaliacao extends Model {
+
+export class Avaliacao extends Model {
 
     static init(sequelize) {
         super.init({
@@ -9,14 +9,18 @@ class Avaliacao extends Model {
                 type: DataTypes.NUMBER,
                 validate: {
                     notEmpty: {msg: "Nota da avaliação deve ser preenchido!"},
+                    isInt: true,
+                    max: 5,
+                    min: 1
                 }
             }
-        }, {sequelize, modelName: 'reserva', tableName: 'reservas'})
+        }, {sequelize, modelName: 'avaliacao', tableName: 'avaliacoes'})
     }
 
     static associate(models) {
-        // this.belongsTo(models.cliente, { as: 'cliente', foreignKey: {name: 'clienteId', allowNull: false, validate: {notNull: {msg: 'Cliente da Reserva deve ser preenchido!'}}}});
-        // this.belongsTo(models.fita, { as: 'fita', foreignKey: {name: 'fitaId', allowNull: false, validate: {notNull: {msg: 'Fita da Reserva deve ser preenchida!'}}}});
+        this.removeAttribute('id');
+        this.belongsTo(models.usuario, {as: 'usuario', foreignKey: {name: 'usuarioId', primaryKey: true, allowNull: false, validate: {notNull: {msg: 'Usuario da avaliação deve ser preenchido!'} }}});
+        this.belongsTo(models.filme, {as: 'filme', foreignKey: {name: 'filmeId', primaryKey: true, allowNull: false, validate: {notNull: {msg: 'Filme da avaliacao deve ser preenchida!'}}}});
     }
 
 }

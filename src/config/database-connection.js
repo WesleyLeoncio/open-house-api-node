@@ -4,6 +4,7 @@ import { Categoria } from '#categoria/models/entity/categoria.js';
 import { Filme } from '#filme/models/entity/filme.js';
 import { Role } from "#role/models/entity/role.js";
 import { Usuario } from "#usuario/models/entity/usuario.js";
+import { Avaliacao} from "#avaliacao/models/entity/avaliacao.js"
 
 const sequelize = new Sequelize(databaseConfig);
 
@@ -12,11 +13,13 @@ Categoria.init(sequelize);
 Filme.init(sequelize);
 Role.init(sequelize);
 Usuario.init(sequelize)
+Avaliacao.init(sequelize)
 
 Categoria.associate(sequelize.models);
 Filme.associate(sequelize.models);
 Role.associate(sequelize.models);
 Usuario.associate(sequelize.models);
+Avaliacao.associate(sequelize.models);
 
 
 databaseCreate();
@@ -58,6 +61,9 @@ function databaseCreate() {
         usuario1.addRoles(role1, {through: 'profile'});
 
         usuario1.addRoles(role2, {through: 'profile'});
+
+        const avaliacao1 = await Avaliacao.create({usuarioId: 1, filmeId: 1, nota: 5});
+        const avaliacao2 = await Avaliacao.create({usuarioId: 1, filmeId: 2, nota: 3});
 
     })();
 }

@@ -1,6 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 
-class Usuario extends Model {
+export class Usuario extends Model {
     static init(sequelize) {
         super.init({
             nome: {
@@ -39,7 +39,6 @@ class Usuario extends Model {
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE'
         });
+        this.hasMany(models.avaliacao, { as: { singular:'avaliacao' , plural: 'avaliacoes'}, onDelete: 'CASCADE', onUpdate: 'CASCADE'});
     }
 }
-
-export { Usuario };
