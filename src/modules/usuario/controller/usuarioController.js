@@ -21,6 +21,13 @@ export class UsuarioController {
             .catch(next);
     }
 
+    static async cadastrarUsuarioComum(req, res, next) {
+        UsuarioService.createUserComum(req)
+            .then(obj => res.json(obj))
+            .catch(next);
+    }
+
+
     static async editarUsuario(req, res, next) {
         UsuarioService.update(req)
             .then(obj => res.json(obj))

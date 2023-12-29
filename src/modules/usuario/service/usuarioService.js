@@ -3,6 +3,7 @@ import { Usuario } from "#usuario/models/entity/usuario.js";
 import { UsuarioResponse } from "#usuario/models/response/usuarioResponse.js";
 import sequelize from "#config/database-connection.js";
 import { Role } from "#role/models/entity/role.js";
+import { RoleResponse } from "#role/models/response/roleResponse.js";
 
 export class UsuarioService {
 
@@ -48,7 +49,28 @@ export class UsuarioService {
         return new UsuarioResponse(await Usuario.findByPk(usuario.id, {include: {all: true, nested: true}}));
     }
 
-    //
+    static async createUserComum(req) {
+        const {nome, login, senha} = req.body;
+
+        const transactionBD = await sequelize.transaction();
+        const usuario = await Usuario.create({
+            nome,
+            login,
+            senha,
+            status: true
+        }, {transaction: transactionBD});
+        try {
+            const roleUser = await Role.findByPk(3, {transaction: transactionBD});
+            await usuario.addRoles(Role.build(new RoleResponse(roleUser)), {transaction: transactionBD});
+            transactionBD.commit();
+        } catch (error) {
+            await transactionBD.rollback();
+            throw "Ouve um erro em uma das roles!";
+        }
+
+        return new UsuarioResponse(await Usuario.findByPk(usuario.id, {include: {all: true, nested: true}}));
+    }
+
     static async update(req) {
         const {id} = req.params;
         const {nome, login, senha, roles} = req.body;
@@ -56,7 +78,7 @@ export class UsuarioService {
         const usuario = await Usuario.findByPk(id, {include: {all: true, nested: true}});
         if (usuario == null) throw "Usuario não encontrado!";
         const transactionBD = await sequelize.transaction();
-        Object.assign(usuario, {nome, login, senha,status: true});
+        Object.assign(usuario, {nome, login, senha, status: true});
         await usuario.save({transaction: transactionBD});
         try {
             await sequelize.models.profile.destroy({where: {usuarioId: usuario.id}, transaction: transactionBD});
