@@ -7,6 +7,10 @@ export class AvaliacaoController {
             .catch(next);
     }
 
-
+    static async buscarTodasAvaliacoesPorUsuario(req, res, next) {
+        AvaliacaoService.findAllByUserId(req)
+            .then(objs => res.json(objs))
+            .catch(next);
+    }
 
 }
