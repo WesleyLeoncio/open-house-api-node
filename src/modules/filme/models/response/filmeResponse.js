@@ -1,4 +1,4 @@
-import {CategoriaResponse} from "#categoria/models/response/categoriaResponse.js";
+import { CategoriaResponse } from "#categoria/models/response/categoriaResponse.js";
 
 export class FilmeResponse {
     constructor(filme) {

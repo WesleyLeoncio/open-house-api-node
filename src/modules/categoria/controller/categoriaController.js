@@ -1,6 +1,6 @@
 import { CategoriaService } from "#categoria/service/categoriaService.js";
 
-class CategoriaController {
+export class CategoriaController {
 
     static async buscarTodasCategorias(req, res, next) {
         CategoriaService.findAll(req)
@@ -33,4 +33,3 @@ class CategoriaController {
     }
 }
 
-export { CategoriaController }

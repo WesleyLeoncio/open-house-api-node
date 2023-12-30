@@ -24,7 +24,7 @@ export class UsuarioService {
     static async findById(req) {
         const {id} = req.params;
         const usuario = await Usuario.findByPk(id, {include: {all: true, nested: true}});
-        return new UsuarioResponse(usuario);
+        return usuario;
     }
 
 

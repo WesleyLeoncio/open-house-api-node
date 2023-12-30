@@ -5,16 +5,19 @@ import routesCategoria from '#categoria/routerCategoria.js';
 import routesFilme from '#filme/routerFilmes.js';
 import routesRole from '#role/routerRole.js';
 import routesUsuario from '#usuario/routerUsuario.js';
+import routesAvaliacao from '#avaliacao/routerAvaliacao.js';
 
 const app = express();
 
 app.use(express.json());
 
+
 //Routes
 app.use(routesCategoria);
 app.use(routesFilme);
 app.use(routesRole);
-app.use(routesUsuario)
+app.use(routesUsuario);
+app.use(routesAvaliacao);
 
 
 app.use(errorHandler); // Manipulador de erro global (error handler)

@@ -1,6 +1,4 @@
-import { CategoriaResponse } from "#categoria/models/response/categoriaResponse.js";
 import { Op } from "sequelize";
-import { query } from "express";
 
 class Pageable {
 
