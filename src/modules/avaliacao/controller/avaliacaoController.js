@@ -15,7 +15,7 @@ export class AvaliacaoController {
 
     static async realizarAvaliacao(req, res, next) {
         AvaliacaoService.realizarAvaliacao(req)
-            .then(objs => res.json(objs))
+            .then(objs => res.status(204).json(objs))
             .catch(next);
     }
 

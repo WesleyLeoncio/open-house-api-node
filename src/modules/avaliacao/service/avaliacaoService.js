@@ -51,20 +51,18 @@ export class AvaliacaoService {
 
     //TODO RECLA DE NEGOCIO TEMPORARIA
     static async verificarAvaliacao(obj) {
-        let avaliacao = await this.buscarAvaliacao(obj.usuarioId, obj.filmeId);
-
+        let avaliacao = await this.buscarAvaliacao(obj.filmeId, obj.usuarioId);
         if (avaliacao == null) {
-            avaliacao = await Avaliacao.create(obj);
+            await Avaliacao.create(obj);
         } else {
             Object.assign(avaliacao, obj);
             await avaliacao.save();
         }
-        return avaliacao;
     }
 
     static async buscarAvaliacao(idFilme, idUsuario) {
         return await Avaliacao.findOne({
-            where: {usuarioId: idUsuario, filmeId: idFilme}
+            where: {filmeId: idFilme,usuarioId: idUsuario}
         });
     }
 
