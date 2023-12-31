@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get('/avaliacoes', AvaliacaoController.buscarTodasAvaliacoes);
 router.get('/avaliacoes/user/:id', AvaliacaoController.buscarTodasAvaliacoesPorUsuario);
-// router.post('/categoria', CategoriaController.cadastrarCategoria);
+router.post('/avaliacoes', AvaliacaoController.realizarAvaliacao);
 // router.put('/categoria/:id', CategoriaController.editarCategoria);
 // router.delete('/categoria/:id', CategoriaController.removerCategoria);
 

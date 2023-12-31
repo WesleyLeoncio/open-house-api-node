@@ -13,7 +13,8 @@ export class CategoriaService {
         return await Categoria.findAndCountAll({
             where: pageable.getFilter('nome'),
             limit: pageable.limit,
-            offset: pageable.offset})
+            offset: pageable.offset
+        })
             .then(data =>
                 pageable.getPagingData(data.count, data.rows.map(c => new CategoriaResponse(c))));
     }

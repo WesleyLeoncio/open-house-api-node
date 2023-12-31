@@ -13,4 +13,10 @@ export class AvaliacaoController {
             .catch(next);
     }
 
+    static async realizarAvaliacao(req, res, next) {
+        AvaliacaoService.realizarAvaliacao(req)
+            .then(objs => res.json(objs))
+            .catch(next);
+    }
+
 }
