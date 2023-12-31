@@ -10,8 +10,8 @@ export class Avaliacao extends Model {
                 validate: {
                     notEmpty: {msg: "Nota da avaliação deve ser preenchido!"},
                     isInt: true,
-                    max: 5,
-                    min: 1
+                    max: {args: 5, msg: "A nota maxima é 5"},
+                    min: {args: 1, msg: "A nota minima é 1"},
                 }
             }
         }, {sequelize, modelName: 'avaliacao', tableName: 'avaliacoes'})

@@ -19,4 +19,10 @@ export class AvaliacaoController {
             .catch(next);
     }
 
+    static async buscarNotaAvaliacao(req, res, next) {
+        AvaliacaoService.findByNotaAvaliacao(req)
+            .then(objs => res.json(objs))
+            .catch(next);
+    }
+
 }

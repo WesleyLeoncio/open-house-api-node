@@ -36,23 +36,37 @@ export class AvaliacaoService {
                 pageable.getPagingData(data.count, data.rows.map(a => new AvaliacaoResponse(a))));
     }
 
+    static async findByNotaAvaliacao(req) {
+        const {filmeId, usuarioId} = req.params;
+        const avaliacao = await this.buscarAvaliacao(filmeId, usuarioId);
+        return {nota: avaliacao.nota}
+    }
+
     static async realizarAvaliacao(req) {
         const {idFilme, idUsuario, nota} = req.body;
         let obj = {usuarioId: idUsuario, filmeId: idFilme, nota: nota};
         return this.verificarAvaliacao(obj);
     }
 
+
+    //TODO RECLA DE NEGOCIO TEMPORARIA
     static async verificarAvaliacao(obj) {
-        let avaliacao = await Avaliacao.findOne({
-            where: {usuarioId: obj.usuarioId, filmeId: obj.filmeId}
-        });
+        let avaliacao = await this.buscarAvaliacao(obj.usuarioId, obj.filmeId);
+
         if (avaliacao == null) {
             avaliacao = await Avaliacao.create(obj);
-        }else{
+        } else {
             Object.assign(avaliacao, obj);
             await avaliacao.save();
         }
         return avaliacao;
     }
+
+    static async buscarAvaliacao(idFilme, idUsuario) {
+        return await Avaliacao.findOne({
+            where: {usuarioId: idUsuario, filmeId: idFilme}
+        });
+    }
+
 
 }
