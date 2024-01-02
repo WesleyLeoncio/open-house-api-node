@@ -4,6 +4,9 @@ import { UsuarioResponse } from "#usuario/models/response/usuarioResponse.js";
 import sequelize from "#config/database-connection.js";
 import { Role } from "#role/models/entity/role.js";
 import { RoleResponse } from "#role/models/response/roleResponse.js";
+import { Bcrypt} from "#security/bcrypt.js";
+import { UsuarioDetailedResponse } from "#usuario/models/response/usuarioDetailedResponse.js";
+
 
 export class UsuarioService {
 
@@ -23,19 +26,21 @@ export class UsuarioService {
 
     static async findById(req) {
         const {id} = req.params;
-        const usuario = await Usuario.findByPk(id, {include: {all: true, nested: true}});
-        return usuario;
+        const usuario = await Usuario.findByPk(id, {include: {all: true, nested: true}})
+        return new UsuarioDetailedResponse(usuario);
     }
 
 
     static async create(req) {
         const {nome, login, senha, roles} = req.body;
 
+        const senhaHash = await Bcrypt.passwordHash(senha);
+
         const transactionBD = await sequelize.transaction();
         const usuario = await Usuario.create({
             nome,
             login,
-            senha,
+            senha: senhaHash,
             status: true
         }, {transaction: transactionBD});
         try {
@@ -52,11 +57,13 @@ export class UsuarioService {
     static async createUserComum(req) {
         const {nome, login, senha} = req.body;
 
+        const senhaHash = await Bcrypt.passwordHash(senha);
+
         const transactionBD = await sequelize.transaction();
         const usuario = await Usuario.create({
             nome,
             login,
-            senha,
+            senha: senhaHash,
             status: true
         }, {transaction: transactionBD});
         try {
@@ -75,10 +82,12 @@ export class UsuarioService {
         const {id} = req.params;
         const {nome, login, senha, roles} = req.body;
 
+        const senhaHash = await Bcrypt.passwordHash(senha);
+
         const usuario = await Usuario.findByPk(id, {include: {all: true, nested: true}});
         if (usuario == null) throw "Usuario não encontrado!";
         const transactionBD = await sequelize.transaction();
-        Object.assign(usuario, {nome, login, senha, status: true});
+        Object.assign(usuario, {nome, login, senha: senhaHash, status: true});
         await usuario.save({transaction: transactionBD});
         try {
             await sequelize.models.profile.destroy({where: {usuarioId: usuario.id}, transaction: transactionBD});
@@ -103,5 +112,11 @@ export class UsuarioService {
         } catch (error) {
             throw "Erro ao tentar deletar usuario!";
         }
+    }
+
+    static async userByLogin(login) {
+        return await Usuario.findOne({
+            where: {login: login}
+        });
     }
 }

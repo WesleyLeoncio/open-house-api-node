@@ -49,7 +49,7 @@ export class AvaliacaoService {
     }
 
 
-    //TODO RECLA DE NEGOCIO TEMPORARIA
+    //TODO REGRA DE NEGOCIO TEMPORARIA
     static async verificarAvaliacao(obj) {
         let avaliacao = await this.buscarAvaliacao(obj.filmeId, obj.usuarioId);
         if (avaliacao == null) {

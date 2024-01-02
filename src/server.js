@@ -6,6 +6,7 @@ import routesFilme from '#filme/routerFilmes.js';
 import routesRole from '#role/routerRole.js';
 import routesUsuario from '#usuario/routerUsuario.js';
 import routesAvaliacao from '#avaliacao/routerAvaliacao.js';
+import routesAutenticacao from '#autenticacao/routerAutenticacao.js';
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(express.json());
 
 
 //Routes
+app.use(routesAutenticacao);
 app.use(routesCategoria);
 app.use(routesFilme);
 app.use(routesRole);

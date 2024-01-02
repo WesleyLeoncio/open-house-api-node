@@ -5,6 +5,7 @@ import { Filme } from '#filme/models/entity/filme.js';
 import { Role } from "#role/models/entity/role.js";
 import { Usuario } from "#usuario/models/entity/usuario.js";
 import { Avaliacao} from "#avaliacao/models/entity/avaliacao.js"
+import { Bcrypt} from "#security/bcrypt.js";
 
 const sequelize = new Sequelize(databaseConfig);
 
@@ -56,7 +57,9 @@ function databaseCreate() {
         const role2 = await Role.create({nome: 'ROLE_ADMIN'});
         const role3 = await Role.create({nome: 'ROLE_USER'});
 
-        const usuario1 = await Usuario.create({nome:'User 1', login:'teste@email.com', senha:'123456', status:true});
+        const senhaHash = await Bcrypt.passwordHash('123456');
+
+        const usuario1 = await Usuario.create({nome:'User 1', login:'teste@email.com', senha:senhaHash, status:true});
 
         usuario1.addRoles(role1, {through: 'profile'});
 
