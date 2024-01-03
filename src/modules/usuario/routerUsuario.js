@@ -5,9 +5,9 @@ import { permissoes } from "#_middleware/verificarToken.js";
 const router = express.Router();
 
 router.get('/usuarios', UsuarioController.buscarTodosUsuarios);
-router.get('/usuario/:id',permissoes(['ROLE_USER']), UsuarioController.buscarUsuarioPorId);
-router.post('/usuario', UsuarioController.cadastrarUsuario);
-router.post('/usuario/comum', UsuarioController.cadastrarUsuarioComum);
-router.put('/usuario/:id', UsuarioController.editarUsuario);
-router.delete('/usuario/:id', UsuarioController.removerUsuario);
+router.get('/usuarios/:id', UsuarioController.buscarUsuarioPorId);
+router.post('/usuarios', UsuarioController.cadastrarUsuario);
+router.post('/usuarios/comum', UsuarioController.cadastrarUsuarioComum);
+router.put('/usuarios/:id', UsuarioController.editarUsuario);
+router.delete('/usuarios/:id', UsuarioController.removerUsuario);
 export default router;

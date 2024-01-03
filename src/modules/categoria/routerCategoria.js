@@ -5,9 +5,9 @@ import { CategoriaController } from '#categoria/controller/categoriaController.j
 const router = express.Router();
 
 router.get('/categorias', CategoriaController.buscarTodasCategorias);
-router.get('/categoria/:id', CategoriaController.buscarCategoriaPorId);
-router.post('/categoria', CategoriaController.cadastrarCategoria);
-router.put('/categoria/:id', CategoriaController.editarCategoria);
-router.delete('/categoria/:id', CategoriaController.removerCategoria);
+router.get('/categorias/:id', CategoriaController.buscarCategoriaPorId);
+router.post('/categorias', CategoriaController.cadastrarCategoria);
+router.put('/categorias/:id', CategoriaController.editarCategoria);
+router.delete('/categorias/:id', CategoriaController.removerCategoria);
 
 export default router;

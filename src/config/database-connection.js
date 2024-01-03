@@ -34,18 +34,18 @@ function databaseCreate() {
         const categoria2 = await Categoria.create({nome: "AVENTURA"})
 
         const filme1 = await Filme.create({
-            nome: "FILME 1",
-            descricao: "Descricao 1",
-            dataLancamento: "2023-12-21",
-            duracao: "1h 30",
-            imagem: "1.png"
+            nome: "Benjamin Button",
+            descricao: "Conta a história de Benjamin Button, um homem que envelhece de trás para frente, com consequências surpreendentes.",
+            dataLancamento: "2008-12-10",
+            duracao: "2 h 46 min",
+            imagem: "benjamin-button/1.jpg"
         });
         const filme2 = await Filme.create({
-            nome: "FILME 2",
-            descricao: "Descricao 2",
-            dataLancamento: "2023-12-21",
-            duracao: "1h 30",
-            imagem: "2.png"
+            nome: "Black Swan",
+            descricao: "Uma esforçada bailarina luta para manter sua sanidade após obter o papel principal no Lago dos Cisnes de Tchaikovsky.",
+            dataLancamento: "2010-09-01",
+            duracao: "1 h 48 min",
+            imagem: "cisne-negro/1.jpg"
         });
 
         await filme1.addCategorias(categoria1, {through: 'filme_categoria'});
