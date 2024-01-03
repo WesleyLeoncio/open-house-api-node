@@ -26,8 +26,7 @@ export class UsuarioService {
 
     static async findById(req) {
         const {id} = req.params;
-        const usuario = await Usuario.findByPk(id, {include: {all: true, nested: true}})
-        return new UsuarioDetailedResponse(usuario);
+        return this.buscarUsuarioPorId(id);
     }
 
 
@@ -114,6 +113,13 @@ export class UsuarioService {
         }
     }
 
+    // TODO REFATORAR
+    static async buscarUsuarioPorId(id){
+        const usuario = await Usuario.findByPk(id, {include: {all: true, nested: true}})
+        return new UsuarioDetailedResponse(usuario);
+    }
+
+    // TODO
     static async userByLogin(login) {
         return await Usuario.findOne({
             where: {login: login}

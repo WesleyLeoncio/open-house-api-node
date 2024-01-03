@@ -3,21 +3,25 @@ import jwt from "jsonwebtoken";
 
 export class JwtToken {
 
-    constructor(user) {
-        this.user = user;
+    constructor() {
         this.secret = process.env.SECRET;
     }
 
-    gerarToken(){
+    gerarToken(user){
         const token = jwt.sign({
-                id: this.user.id,
-                nome: this.user.nome,
-                login: this.user.login,
+                id: user.id,
+                nome: user.nome,
+                login: user.login,
             },
             this.secret,
             { expiresIn: "2h" }
         );
         return {token};
+    }
+
+
+    verificarToken(token){
+      return jwt.verify(token, this.secret);
     }
 
 }

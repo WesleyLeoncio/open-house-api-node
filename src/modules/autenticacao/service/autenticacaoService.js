@@ -14,11 +14,10 @@ export class AutenticacaoService {
         const checkPassword = await Bcrypt.checkPassword(senha, user.senha);
         if (!checkPassword) throw "Senha incorreta!";
 
-        const jwtToken = new JwtToken(user);
+        const jwtToken = new JwtToken();
 
 
-
-        return jwtToken.gerarToken();
+        return jwtToken.gerarToken(user);
     }
 
 
