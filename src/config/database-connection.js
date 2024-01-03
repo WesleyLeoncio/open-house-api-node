@@ -65,6 +65,8 @@ function databaseCreate() {
 
         usuario1.addRoles(role2, {through: 'profile'});
 
+        usuario1.addRoles(role3, {through: 'profile'});
+
         const avaliacao1 = await Avaliacao.create({usuarioId: 1, filmeId: 1, nota: 5});
         const avaliacao2 = await Avaliacao.create({usuarioId: 1, filmeId: 2, nota: 3});
 
