@@ -1,7 +1,6 @@
 import { UsuarioService } from "#usuario/service/usuarioService.js";
 import { Bcrypt } from "#security/bcrypt.js";
-import jwt from "jsonwebtoken";
-import 'dotenv/config';
+import { JwtToken } from "#security/jwtToken.js";
 export class AutenticacaoService {
     //TODO REFATORAR
     static async login(req) {
@@ -9,22 +8,17 @@ export class AutenticacaoService {
 
         //TODO VALIDAR
         const user = await UsuarioService.userByLogin(login);
+        if (!user) throw "Usuario incorreto!";
 
         //TODO VALIDAR
-        const checkPassword = await Bcrypt.checkPassword(senha, user.senha)
+        const checkPassword = await Bcrypt.checkPassword(senha, user.senha);
+        if (!checkPassword) throw "Senha incorreta!";
 
-        const secret =  process.env.SECRET;
+        const jwtToken = new JwtToken(user);
 
 
-        const token = jwt.sign({
-            id: user.id,
-            nome: user.nome,
-            login: user.login,
-        },
-        secret
-        );
 
-        return {token};
+        return jwtToken.gerarToken();
     }
 
 
