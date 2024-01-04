@@ -1,17 +1,24 @@
 import { Filme } from '#filme/models/entity/filme.js';
 import { Categoria } from '#categoria/models/entity/categoria.js';
 import { FilmeResponse } from "#filme/models/response/filmeResponse.js";
-import { Pageable } from "#utils/pageable.js";
+
 
 import sequelize from '#config/database-connection.js';
 
-//TODO REFATORAR E TALVES COLOCAR COLOCAR UM AWAIT NO ID
-
 class FilmeService {
 
-    static async findAll(req) {
-        const pageable = new Pageable(req.query);
-        return await Filme.findAndCountAll({include: {all: true, nested: true},
+    static async findAll(pageable) {
+        return await Filme.findAndCountAll({
+            include: [
+                {
+                    model: Categoria,
+                    as: 'categorias',
+                    attributes: ['id', 'nome'],
+                    through: {
+                        attributes: [],
+                    }
+                }
+            ],
             distinct: true,
             limit: pageable.limit,
             offset: pageable.offset,
@@ -22,57 +29,44 @@ class FilmeService {
                 pageable.getPagingData(data.count, data.rows.map(f => new FilmeResponse(f))));
     }
 
-    static async findById(req) {
-        const {id} = req.params;
-        const filme = await Filme.findByPk(id, {include: {all: true, nested: true}});
-        return new FilmeResponse(filme);
+    static async findById(id) {
+        return new FilmeResponse( await this.buscarFilme(id));
     }
 
-
-    static async create(req) {
-        const {nome, descricao, dataLancamento, duracao, imagem, categorias} = req.body;
+    static async create(filmeRequest) {
         const transactionBD = await sequelize.transaction();
-        const filme = await Filme.create({
-            nome,
-            descricao,
-            dataLancamento,
-            duracao,
-            imagem
-        }, {transaction: transactionBD});
+        const filme = await Filme.create(filmeRequest.getFilme(), {transaction: transactionBD});
         try {
-            await Promise.all(categorias.map(categoria => filme.addCategorias(Categoria.build(categoria), {transaction: transactionBD})));
+            await Promise.all(filmeRequest.getCategoria().map(categoria => filme.addCategorias(Categoria.build(categoria), {transaction: transactionBD})));
             transactionBD.commit();
         } catch (error) {
             await transactionBD.rollback();
             throw "Ouve um erro em uma das categorias!";
         }
 
-        return new FilmeResponse(await Filme.findByPk(filme.id, {include: {all: true, nested: true}}));
+        return await this.findById(filme.id);
     }
 
-    static async update(req) {
-        const {id} = req.params;
-        const {nome, descricao, dataLancamento, duracao, imagem, categorias} = req.body;
-        const filme = await Filme.findByPk(id, {include: {all: true, nested: true}});
+    static async update(filmeRequest) {
+        const filme = await this.buscarFilme(filmeRequest.id);
         if (filme == null) throw "Filme não encontrado!";
         const transactionBD = await sequelize.transaction();
-        Object.assign(filme, {nome, descricao, dataLancamento, duracao, imagem});
+        Object.assign(filme, filmeRequest.getFilme());
         await filme.save({transaction: transactionBD});
         try {
             await sequelize.models.filme_categoria.destroy({where: {filmeId: filme.id}, transaction: transactionBD});
-            await Promise.all(categorias.map(categoria => filme.addCategorias(Categoria.build(categoria), {transaction: transactionBD})));
+            await Promise.all(filmeRequest.getCategoria().map(categoria => filme.addCategorias(Categoria.build(categoria), {transaction: transactionBD})));
             transactionBD.commit();
         } catch (error) {
             await transactionBD.rollback();
             throw "Ouve um erro em uma das categorias!";
         }
 
-        return new FilmeResponse(await Filme.findByPk(filme.id, {include: {all: true, nested: true}}));
+        return await this.findById(filme.id);
     }
 
-    static async delete(req) {
-        const {id} = req.params;
-        const filme = await Filme.findByPk(id, {include: {all: true, nested: true}});
+    static async delete(id) {
+        const filme = await this.buscarFilme(id);
         if (filme == null)
             throw 'Filme não encontrado!';
         try {
@@ -82,6 +76,22 @@ class FilmeService {
             throw "Erro ao tentar deletar filme!";
         }
     }
+
+    static async buscarFilme(id) {
+        return  await Filme.findByPk(id, {
+            include: [
+                {
+                    model: Categoria,
+                    as: 'categorias',
+                    attributes: ['id', 'nome'],
+                    through: {
+                        attributes: [],
+                    }
+                }
+            ]
+        });
+    }
 }
+
 
 export { FilmeService }

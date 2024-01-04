@@ -1,37 +1,43 @@
-import {FilmeService} from '#filme/service/filmeService.js';
+import { FilmeService } from '#filme/service/filmeService.js';
+import { Pageable } from "#utils/pageable.js";
+import { FilmeCreatRequest } from "#filme/models/request/filmeCreatRequest.js";
+import { FilmeEditRequest } from "#filme/models/request/filmeEditRequest.js";
 
 class FilmeController {
 
     static async buscarTodosFilmes(req, res, next) {
-        FilmeService.findAll(req)
+        const pageable = new Pageable(req.query);
+        FilmeService.findAll(pageable)
             .then(objs => res.json(objs))
             .catch(next);
     }
 
     static async buscarFilmePorId(req, res, next) {
-        FilmeService.findById(req)
+        const { id } = req.params;
+        FilmeService.findById(id)
             .then(obj => res.json(obj))
             .catch(next);
     }
 
     static async cadastrarFilme(req, res, next) {
-        FilmeService.create(req)
+        FilmeService.create(new FilmeCreatRequest(req.body))
             .then(obj => res.json(obj))
             .catch(next);
     }
 
     static async editarFilme(req, res, next) {
-        FilmeService.update(req)
+        FilmeService.update(new FilmeEditRequest(req))
             .then(obj => res.json(obj))
             .catch(next);
     }
 
 
     static async removerFilme(req, res, next) {
-        FilmeService.delete(req)
+        const { id } = req.params;
+        FilmeService.delete(id)
             .then(obj => res.json(obj))
             .catch(next);
     }
 }
 
-export {FilmeController}
+export { FilmeController }
