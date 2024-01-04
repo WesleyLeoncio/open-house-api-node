@@ -1,33 +1,39 @@
 import { CategoriaService } from "#categoria/service/categoriaService.js";
+import { Pageable } from "#utils/pageable.js";
+import { CategoriaCreatRequest } from "#categoria/models/request/categoriaCreatRequest.js";
+import { CategoriaEditRequest } from "#categoria/models/request/categoriaEditRequest.js";
 
 export class CategoriaController {
 
     static async buscarTodasCategorias(req, res, next) {
-        CategoriaService.findAll(req)
+        const pageable = new Pageable(req.query);
+        CategoriaService.findAll(pageable)
             .then(objs => res.json(objs))
             .catch(next);
     }
 
     static async buscarCategoriaPorId(req, res, next) {
-        CategoriaService.findById(req)
+        const { id } = req.params;
+        CategoriaService.findById(id)
             .then(obj => res.json(obj))
             .catch(next);
     }
 
     static async cadastrarCategoria(req, res, next) {
-        CategoriaService.create(req)
+        CategoriaService.create(new CategoriaCreatRequest(req.body))
             .then(obj => res.json(obj))
             .catch(next);
     }
 
     static async editarCategoria(req, res, next) {
-        CategoriaService.update(req)
+        CategoriaService.update(new CategoriaEditRequest(req))
             .then(obj => res.json(obj))
             .catch(next);
     }
 
     static async removerCategoria(req, res, next) {
-        CategoriaService.delete(req)
+        const { id } = req.params;
+        CategoriaService.delete(id)
             .then(obj => res.json(obj))
             .catch(next);
     }
