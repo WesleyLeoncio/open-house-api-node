@@ -1,19 +1,28 @@
-import { Pageable } from "#utils/pageable.js";
 import { Usuario } from "#usuario/models/entity/usuario.js";
 import { UsuarioResponse } from "#usuario/models/response/usuarioResponse.js";
 import sequelize from "#config/database-connection.js";
 import { Role } from "#role/models/entity/role.js";
 import { RoleResponse } from "#role/models/response/roleResponse.js";
-import { Bcrypt} from "#security/bcrypt.js";
+import { Bcrypt } from "#security/bcrypt.js";
 import { UsuarioDetailedResponse } from "#usuario/models/response/usuarioDetailedResponse.js";
+import { UsuarioBasicResponse } from "#usuario/models/response/usuarioBasicResponse.js";
 
 
 export class UsuarioService {
 
-    static async findAll(req) {
-        const pageable = new Pageable(req.query);
+    static async findAll(pageable) {
+
         return await Usuario.findAndCountAll({
-            include: {all: true, nested: true},
+            include: [
+                {
+                    model: Role,
+                    as: 'roles',
+                    attributes: ['id', 'nome'],
+                    through: {
+                        attributes: [],
+                    }
+                }
+            ],
             distinct: true,
             limit: pageable.limit,
             offset: pageable.offset,
@@ -24,47 +33,35 @@ export class UsuarioService {
                 pageable.getPagingData(data.count, data.rows.map(u => new UsuarioResponse(u))));
     }
 
-    static async findById(req) {
-        const {id} = req.params;
-        return this.buscarUsuarioPorId(id);
+    static async findById(id) {
+        return new UsuarioDetailedResponse(await this.buscarUsuario(id));
     }
 
 
-    static async create(req) {
-        const {nome, login, senha, roles} = req.body;
+    static async create(usuarioResquest) {
 
-        const senhaHash = await Bcrypt.passwordHash(senha);
+        usuarioResquest.senha = await Bcrypt.passwordHash(usuarioResquest.senha);
 
         const transactionBD = await sequelize.transaction();
-        const usuario = await Usuario.create({
-            nome,
-            login,
-            senha: senhaHash,
-            status: true
-        }, {transaction: transactionBD});
+        const usuario = await Usuario.create(usuarioResquest.getUsuario(),
+            {transaction: transactionBD});
         try {
-            await Promise.all(roles.map(role => usuario.addRoles(Role.build(role), {transaction: transactionBD})));
+            await Promise.all(usuarioResquest.getRoles().map(role => usuario.addRoles(Role.build(role), {transaction: transactionBD})));
             transactionBD.commit();
         } catch (error) {
             await transactionBD.rollback();
             throw "Ouve um erro em uma das roles!";
         }
 
-        return new UsuarioResponse(await Usuario.findByPk(usuario.id, {include: {all: true, nested: true}}));
+        return new UsuarioResponse(await this.buscarUsuario(usuario.id));
     }
 
-    static async createUserComum(req) {
-        const {nome, login, senha} = req.body;
+    static async createUserComum(usuarioResquest) {
 
-        const senhaHash = await Bcrypt.passwordHash(senha);
+        usuarioResquest.senha = await Bcrypt.passwordHash(usuarioResquest.senha);
 
         const transactionBD = await sequelize.transaction();
-        const usuario = await Usuario.create({
-            nome,
-            login,
-            senha: senhaHash,
-            status: true
-        }, {transaction: transactionBD});
+        const usuario = await Usuario.create(usuarioResquest, {transaction: transactionBD});
         try {
             const roleUser = await Role.findByPk(3, {transaction: transactionBD});
             await usuario.addRoles(Role.build(new RoleResponse(roleUser)), {transaction: transactionBD});
@@ -74,35 +71,32 @@ export class UsuarioService {
             throw "Ouve um erro em uma das roles!";
         }
 
-        return new UsuarioResponse(await Usuario.findByPk(usuario.id, {include: {all: true, nested: true}}));
+        return new UsuarioResponse(await this.buscarUsuario(usuario.id));
     }
 
-    static async update(req) {
-        const {id} = req.params;
-        const {nome, login, senha, roles} = req.body;
+    static async update(usuarioResquest) {
 
-        const senhaHash = await Bcrypt.passwordHash(senha);
+        usuarioResquest.senha = await Bcrypt.passwordHash(usuarioResquest.senha);
 
-        const usuario = await Usuario.findByPk(id, {include: {all: true, nested: true}});
+        const usuario = await this.buscarUsuario(usuarioResquest.id);
         if (usuario == null) throw "Usuario não encontrado!";
         const transactionBD = await sequelize.transaction();
-        Object.assign(usuario, {nome, login, senha: senhaHash, status: true});
+        Object.assign(usuario, usuarioResquest.getUsuario());
         await usuario.save({transaction: transactionBD});
         try {
             await sequelize.models.profile.destroy({where: {usuarioId: usuario.id}, transaction: transactionBD});
-            await Promise.all(roles.map(role => usuario.addRoles(Role.build(role), {transaction: transactionBD})));
+            await Promise.all(usuarioResquest.getRoles().map(role => usuario.addRoles(Role.build(role), {transaction: transactionBD})));
             transactionBD.commit();
         } catch (error) {
             await transactionBD.rollback();
             throw "Ouve um erro em uma das Roles!";
         }
 
-        return new UsuarioResponse(await Usuario.findByPk(usuario.id, {include: {all: true, nested: true}}));
+        return new UsuarioResponse(await this.buscarUsuario(usuario.id));
     }
 
-    static async delete(req) {
-        const {id} = req.params;
-        const usuario = await Usuario.findByPk(id, {include: {all: true, nested: true}});
+    static async delete(id) {
+        const usuario = await this.buscarUsuario(id);
         if (usuario == null)
             throw 'Usuario não encontrado!';
         try {
@@ -113,16 +107,26 @@ export class UsuarioService {
         }
     }
 
-    // TODO REFATORAR
-    static async buscarUsuarioPorId(id){
-        const usuario = await Usuario.findByPk(id, {include: {all: true, nested: true}})
-        return new UsuarioDetailedResponse(usuario);
+    static async buscarUsuario(id) {
+        return await Usuario.findByPk(id, {
+            include: [
+                {
+                    model: Role,
+                    as: 'roles',
+                    attributes: ['id', 'nome'],
+                    through: {
+                        attributes: [],
+                    }
+                }
+            ],
+        })
     }
 
-    // TODO
+    // TODO REFATORAR
     static async userByLogin(login) {
-        return await Usuario.findOne({
-            where: {login: login}
+        const usuario = await Usuario.findOne({
+            where: {login:login}
         });
+        return new UsuarioBasicResponse(usuario);
     }
 }

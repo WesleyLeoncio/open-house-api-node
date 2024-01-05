@@ -11,7 +11,7 @@ export const verificarToken = async (req, res, next) => {
         }
         const jwtToken = new JwtToken();
         const usuario = jwtToken.verificarToken(token);
-        req.user = await UsuarioService.buscarUsuarioPorId(usuario.id);
+        req.user = await UsuarioService.findById(usuario.id);
         next();
     } catch (error) {
         return res.status(400).json({msg: "Token inválido!"})

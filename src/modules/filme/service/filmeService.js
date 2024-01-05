@@ -30,7 +30,7 @@ class FilmeService {
     }
 
     static async findById(id) {
-        return new FilmeResponse( await this.buscarFilme(id));
+        return new FilmeResponse(await this.buscarFilme(id));
     }
 
     static async create(filmeRequest) {
