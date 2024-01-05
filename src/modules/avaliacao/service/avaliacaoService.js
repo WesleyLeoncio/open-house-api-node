@@ -2,6 +2,7 @@ import { Avaliacao } from "#avaliacao/models/entity/avaliacao.js";
 import { AvaliacaoResponse } from "#avaliacao/models/response/AvaliacaoResponse.js";
 import { Filme } from "#filme/models/entity/filme.js";
 import { Categoria } from "#categoria/models/entity/categoria.js";
+import { NotaResponse } from "#avaliacao/models/response/notaResponse.js";
 
 export class AvaliacaoService {
 
@@ -30,7 +31,7 @@ export class AvaliacaoService {
                 pageable.getPagingData(data.count, data.rows.map(a => new AvaliacaoResponse(a))));
     }
 
-    static async findAllByUserId(avaliacaoRequest) {
+    static async findAllByUserId(avaliacaoByUserIdResquest) {
         return await Avaliacao.findAndCountAll({
             include: [
                 {
@@ -47,18 +48,17 @@ export class AvaliacaoService {
             ],
             distinct: true,
             col: "filme_id",
-            limit: avaliacaoRequest.pageable.limit,
-            offset: avaliacaoRequest.pageable.offset,
-            where: [{usuario_id: avaliacaoRequest.id}, avaliacaoRequest.pageable.getFilter('nota')],
+            limit: avaliacaoByUserIdResquest.pageable.limit,
+            offset: avaliacaoByUserIdResquest.pageable.offset,
+            where: [{usuario_id: avaliacaoByUserIdResquest.id}, avaliacaoByUserIdResquest.pageable.getFilter('nota')],
         })
             .then(data =>
-                avaliacaoRequest.pageable.getPagingData(data.count, data.rows.map(a => new AvaliacaoResponse(a))));
+                avaliacaoByUserIdResquest.pageable.getPagingData(data.count, data.rows.map(a => new AvaliacaoResponse(a))));
     }
 
-    static async findByNotaAvaliacao(req) {
-        const {filmeId, usuarioId} = req.params;
-        const avaliacao = await this.buscarAvaliacao(filmeId, usuarioId);
-        return {nota: avaliacao.nota}
+    static async findByNotaAvaliacao(avaliacaoByNotaRequest) {
+        const avaliacao = await this.buscarAvaliacao(avaliacaoByNotaRequest);
+        return new NotaResponse(avaliacao);
     }
 
     static async realizarAvaliacao(avaliacaoRequest) {
@@ -67,19 +67,19 @@ export class AvaliacaoService {
 
 
     //TODO REGRA DE NEGOCIO TEMPORARIA
-    static async verificarAvaliacao(obj) {
-        let avaliacao = await this.buscarAvaliacao(obj.filmeId, obj.usuarioId);
+    static async verificarAvaliacao(avaliacaoRequest) {
+        let avaliacao = await this.buscarAvaliacao(avaliacaoRequest);
         if (avaliacao == null) {
-            await Avaliacao.create(obj);
+            await Avaliacao.create(avaliacaoRequest);
         } else {
-            Object.assign(avaliacao, obj);
+            Object.assign(avaliacao, avaliacaoRequest);
             await avaliacao.save();
         }
     }
 
-    static async buscarAvaliacao(idFilme, idUsuario) {
+    static async buscarAvaliacao(avaliacaoByNotaRequest) {
         return await Avaliacao.findOne({
-            where: {filmeId: idFilme, usuarioId: idUsuario}
+            where: {filmeId: avaliacaoByNotaRequest.filmeId, usuarioId: avaliacaoByNotaRequest.usuarioId}
         });
     }
 
