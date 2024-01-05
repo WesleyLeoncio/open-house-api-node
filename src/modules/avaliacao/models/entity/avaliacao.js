@@ -1,6 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
 
-
 export class Avaliacao extends Model {
 
     static init(sequelize) {
