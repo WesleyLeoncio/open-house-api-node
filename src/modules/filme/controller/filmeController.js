@@ -21,7 +21,7 @@ class FilmeController {
 
     static async cadastrarFilme(req, res, next) {
         FilmeService.create(new FilmeCreatRequest(req.body))
-            .then(obj => res.json(obj))
+            .then(obj => res.status(201).json(obj))
             .catch(next);
     }
 
@@ -35,7 +35,7 @@ class FilmeController {
     static async removerFilme(req, res, next) {
         const { id } = req.params;
         FilmeService.delete(id)
-            .then(obj => res.json(obj))
+            .then(obj => res.status(204).json(obj))
             .catch(next);
     }
 }

@@ -21,7 +21,7 @@ export class CategoriaController {
 
     static async cadastrarCategoria(req, res, next) {
         CategoriaService.create(new CategoriaCreatRequest(req.body))
-            .then(obj => res.json(obj))
+            .then(obj => res.status(201).json(obj))
             .catch(next);
     }
 
@@ -34,7 +34,7 @@ export class CategoriaController {
     static async removerCategoria(req, res, next) {
         const { id } = req.params;
         CategoriaService.delete(id)
-            .then(obj => res.json(obj))
+            .then(obj => res.status(204).json(obj))
             .catch(next);
     }
 }

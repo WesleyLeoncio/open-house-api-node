@@ -23,13 +23,13 @@ export class UsuarioController {
 
     static async cadastrarUsuario(req, res, next) {
         UsuarioService.create(new UsuarioCreatRequest(req.body))
-            .then(obj => res.json(obj))
+            .then(obj => res.status(201).json(obj))
             .catch(next);
     }
 
     static async cadastrarUsuarioComum(req, res, next) {
         UsuarioService.createUserComum(new UsuarioCreatComunRequest(req.body))
-            .then(obj => res.json(obj))
+            .then(obj => res.status(201).json(obj))
             .catch(next);
     }
 
@@ -43,7 +43,7 @@ export class UsuarioController {
     static async removerUsuario(req, res, next) {
         const {id} = req.params;
         UsuarioService.delete(id)
-            .then(obj => res.json(obj))
+            .then(obj => res.status(204).json(obj))
             .catch(next);
     }
 }

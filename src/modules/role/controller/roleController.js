@@ -20,7 +20,7 @@ export class RoleController {
 
     static async cadastrarRole(req, res, next) {
         RoleService.create(new RoleCreatRequest(req.body))
-            .then(obj => res.json(obj))
+            .then(obj => res.status(201).json(obj))
             .catch(next);
     }
 
@@ -33,7 +33,7 @@ export class RoleController {
     static async removerRole(req, res, next) {
         const { id } = req.params;
         RoleService.delete(id)
-            .then(obj => res.json(obj))
+            .then(obj => res.status(204).json(obj))
             .catch(next);
     }
 }
