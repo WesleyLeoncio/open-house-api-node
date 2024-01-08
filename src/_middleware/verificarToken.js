@@ -1,7 +1,6 @@
 import { JwtToken } from "#security/jwtToken.js";
 import { UsuarioService } from "#usuario/service/usuarioService.js";
 
-//TODO REFATORAR
 export const verificarToken = async (req, res, next) => {
     try {
         const authHeader = req.headers["authorization"];

@@ -7,7 +7,9 @@ class Role extends Model {
             nome: {
                 type: DataTypes.STRING,
                 unique: true,
+                allowNull: false,
                 validate: {
+                    notNull: {msg: 'Campo nome não pode ser null!'},
                     notEmpty: {msg: "Nome da Role deve ser preenchido!"},
                     len: {args: [2, 20], msg: "Nome da Role deve ter entre 2 e 20 letras!"}
                 }

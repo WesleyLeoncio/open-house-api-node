@@ -13,7 +13,12 @@ function errorHandler(err, req, res, next) {
                 return res.status(400).json({ message: "Pelo menos um dos conceitos associados a esta inserção ou alteração não existe!" });
             } else if (err.name === "SequelizeUniqueConstraintError") {
                 return res.status(400).json({ message: "Esse registro já existe na base de dados!" });
-            } else {
+            }else if (err.name === "AuthenticationServiceException"){
+                 return res.status(err.status).json({ message: err.message });
+            }else if (err.name === "CredentialsException"){
+                return res.status(err.status).json({ message: err.message });
+            }
+            else {
                 return res.status(500).json({ message: err.message });
             }
     }
@@ -21,4 +26,3 @@ function errorHandler(err, req, res, next) {
 
 export default errorHandler;
 
-//TODO REFATORAR ARQUIVO

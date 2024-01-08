@@ -5,7 +5,7 @@ export class Avaliacao extends Model {
     static init(sequelize) {
         super.init({
             nota: {
-                type: DataTypes.NUMBER,
+                type: DataTypes.INTEGER,
                 validate: {
                     notEmpty: {msg: "Nota da avaliação deve ser preenchido!"},
                     isInt: true,

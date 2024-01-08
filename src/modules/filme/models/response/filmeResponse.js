@@ -7,6 +7,7 @@ export class FilmeResponse {
         this.dataLancamento = filme.dataLancamento;
         this.duracao = filme.duracao;
         this.imagem = filme.imagem;
+        this.descricao = filme.descricao;
         this.categorias = filme.categorias.map(c => new CategoriaResponse(c));
     }
 

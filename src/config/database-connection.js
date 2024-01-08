@@ -13,8 +13,8 @@ const sequelize = new Sequelize(databaseConfig);
 Categoria.init(sequelize);
 Filme.init(sequelize);
 Role.init(sequelize);
-Usuario.init(sequelize)
-Avaliacao.init(sequelize)
+Usuario.init(sequelize);
+Avaliacao.init(sequelize);
 
 Categoria.associate(sequelize.models);
 Filme.associate(sequelize.models);
@@ -25,7 +25,7 @@ Avaliacao.associate(sequelize.models);
 
 databaseCreate();
 
-//TODO DELETAR E REFATORAR
+//TODO CRIAÇÃO DE TABELAS E DADOS DE TESTE
 function databaseCreate() {
     (async () => {
         await sequelize.sync({force: true});

@@ -66,7 +66,6 @@ export class AvaliacaoService {
     }
 
 
-    //TODO REGRA DE NEGOCIO TEMPORARIA
     static async verificarAvaliacao(avaliacaoRequest) {
         let avaliacao = await this.buscarAvaliacao(avaliacaoRequest);
         if (avaliacao == null) {

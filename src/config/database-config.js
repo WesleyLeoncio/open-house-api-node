@@ -16,7 +16,7 @@ export const databaseConfig = {
 //   host: 'localhost',
 //   username: 'postgres',
 //   password: 'postgres',
-//   database: 'open-house-node',
+//   database: 'open-house-teste',
 //   define: {
 //     timestamps: true,
 //     freezeTableName: true,

@@ -6,6 +6,7 @@ import { RoleResponse } from "#role/models/response/roleResponse.js";
 import { Bcrypt } from "#security/bcrypt.js";
 import { UsuarioDetailedResponse } from "#usuario/models/response/usuarioDetailedResponse.js";
 import { UsuarioBasicResponse } from "#usuario/models/response/usuarioBasicResponse.js";
+import { AuthenticationServiceException} from "#exceptions/authenticationServiceException.js";
 
 
 export class UsuarioService {
@@ -122,11 +123,15 @@ export class UsuarioService {
         })
     }
 
-    // TODO REFATORAR
+
     static async userByLogin(login) {
-        const usuario = await Usuario.findOne({
-            where: {login:login}
-        });
-        return new UsuarioBasicResponse(usuario);
+        try {
+            const usuario = await Usuario.findOne({
+                where: {login: login}
+            });
+            return new UsuarioBasicResponse(usuario);
+        }catch (err){
+            throw new AuthenticationServiceException("Usuário não existe!");
+        }
     }
 }
