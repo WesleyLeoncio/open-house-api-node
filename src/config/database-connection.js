@@ -1,4 +1,4 @@
-import Sequelize from 'sequelize';
+import { Sequelize } from 'sequelize';
 import { databaseConfig } from "#config/database-config.js";
 import { Categoria } from '#categoria/models/entity/categoria.js';
 import { Filme } from '#filme/models/entity/filme.js';
@@ -67,8 +67,8 @@ function databaseCreate() {
 
         usuario1.addRoles(role3, {through: 'profile'});
 
-        const avaliacao1 = await Avaliacao.create({usuarioId: 1, filmeId: 1, nota: 5});
-        const avaliacao2 = await Avaliacao.create({usuarioId: 1, filmeId: 2, nota: 3});
+        await Avaliacao.create({usuarioId: 1, filmeId: 1, nota: 5});
+        await Avaliacao.create({usuarioId: 1, filmeId: 2, nota: 3});
 
     })();
 }
