@@ -20,7 +20,7 @@ class Categoria extends Model {
     static associate(models) {
         this.belongsToMany(models.filme, {
             as: 'filmes',
-            through: 'filme_categoria',
+            through: 'categoria_filme',
             onDelete: 'RESTRICT',
             onUpdate: 'CASCADE'
         });

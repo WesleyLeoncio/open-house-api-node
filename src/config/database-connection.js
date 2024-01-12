@@ -1,26 +1,24 @@
 import { Sequelize } from 'sequelize';
 import { databaseConfig } from "#config/database-config.js";
+import { Bcrypt} from "#security/bcrypt.js";
 import { Categoria } from '#categoria/models/entity/categoria.js';
 import { Filme } from '#filme/models/entity/filme.js';
 import { Role } from "#role/models/entity/role.js";
 import { Usuario } from "#usuario/models/entity/usuario.js";
 import { Avaliacao} from "#avaliacao/models/entity/avaliacao.js"
-import { Bcrypt} from "#security/bcrypt.js";
 
 const sequelize = new Sequelize(databaseConfig);
 
+const models = [
+    Categoria,
+    Filme,
+    Role,
+    Usuario,
+    Avaliacao
+]
 
-Categoria.init(sequelize);
-Filme.init(sequelize);
-Role.init(sequelize);
-Usuario.init(sequelize);
-Avaliacao.init(sequelize);
-
-Categoria.associate(sequelize.models);
-Filme.associate(sequelize.models);
-Role.associate(sequelize.models);
-Usuario.associate(sequelize.models);
-Avaliacao.associate(sequelize.models);
+models.forEach(model => model.init(sequelize));
+models.forEach(model => model.associate(sequelize.models));
 
 
 databaseCreate();

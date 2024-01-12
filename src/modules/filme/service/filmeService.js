@@ -54,7 +54,7 @@ class FilmeService {
         Object.assign(filme, filmeRequest.getFilme());
         await filme.save({transaction: transactionBD});
         try {
-            await sequelize.models.filme_categoria.destroy({where: {filmeId: filme.id}, transaction: transactionBD});
+            await sequelize.models.categoria_filme.destroy({where: {filmeId: filme.id}, transaction: transactionBD});
             await Promise.all(filmeRequest.getCategoria().map(categoria => filme.addCategorias(Categoria.build(categoria), {transaction: transactionBD})));
             transactionBD.commit();
         } catch (error) {

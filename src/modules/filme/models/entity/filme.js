@@ -51,7 +51,7 @@ class Filme extends Model {
     static associate(models) {
         this.belongsToMany(models.categoria, {
             as: 'categorias',
-            through: 'filme_categoria',
+            through: 'categoria_filme',
             onDelete: 'CASCADE',
             onUpdate: 'CASCADE'
         });
