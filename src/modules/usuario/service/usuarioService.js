@@ -48,7 +48,7 @@ export class UsuarioService {
             {transaction: transactionBD});
         try {
             await Promise.all(usuarioResquest.getRoles().map(role => usuario.addRoles(Role.build(role), {transaction: transactionBD})));
-            transactionBD.commit();
+            await transactionBD.commit();
         } catch (error) {
             await transactionBD.rollback();
             throw "Ouve um erro em uma das roles!";
@@ -66,7 +66,7 @@ export class UsuarioService {
         try {
             const roleUser = await Role.findByPk(3, {transaction: transactionBD});
             await usuario.addRoles(Role.build(new RoleResponse(roleUser)), {transaction: transactionBD});
-            transactionBD.commit();
+            await transactionBD.commit();
         } catch (error) {
             await transactionBD.rollback();
             throw "Ouve um erro em uma das roles!";
@@ -87,7 +87,7 @@ export class UsuarioService {
         try {
             await sequelize.models.profile.destroy({where: {usuarioId: usuario.id}, transaction: transactionBD});
             await Promise.all(usuarioResquest.getRoles().map(role => usuario.addRoles(Role.build(role), {transaction: transactionBD})));
-            transactionBD.commit();
+            await transactionBD.commit();
         } catch (error) {
             await transactionBD.rollback();
             throw "Ouve um erro em uma das Roles!";
